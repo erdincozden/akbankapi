@@ -78,20 +78,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Log.d(TAG, String.valueOf(atmAdapter.getItemCount()));
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-             /*   Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
 
-            }
-        });*/
     }
 
     private void findAtm() throws JSONException {
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("latitude", "40.995460");
         params.put("longitude", "28.978359");
         params.put("radius", "1000000");
@@ -109,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if(response.getString("returnCode").equals("")&&response.getString("returnMsg").equals("")){
                         Log.d(TAG,"Basarılı");
-                        List<String> allNames = new ArrayList<String>();
+                        List<String> allNames = new ArrayList<>();
 
                         JSONArray data = response.getJSONArray("data");
                         for (int i=0; i<data.length(); i++) {
@@ -158,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String>  params = new HashMap<String, String>();
+                Map<String, String>  params = new HashMap<>();
                 params.put("Content-Type", "application/json");
                 params.put("apikey", "l7xxdd95497a30fa403b99bd37a3ebaa0052");
 
