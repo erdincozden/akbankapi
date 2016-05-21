@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() {
                 Map<String, String>  params = new HashMap<>();
                 params.put("Content-Type", "application/json");
-                params.put("apikey", "l7xxdd95497a30fa403b99bd37a3ebaa0052");
+                params.put("apikey", "");
 
                 return params;
             }
