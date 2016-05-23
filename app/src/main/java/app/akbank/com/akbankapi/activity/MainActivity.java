@@ -13,10 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.Toast;
 import app.akbank.com.akbankapi.R;
 import app.akbank.com.akbankapi.adapter.ATMAdapter;
 import app.akbank.com.akbankapi.app.EndPoints;
 import app.akbank.com.akbankapi.app.MyApplication;
+import app.akbank.com.akbankapi.helper.GPSTracker;
 import app.akbank.com.akbankapi.helper.SimpleDividerItemDecoration;
 import app.akbank.com.akbankapi.model.ATM;
 import com.android.volley.Request;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ATM> atmArrayList;
     private ATMAdapter atmAdapter;
     private RecyclerView recyclerView;
+    private Button btnRefresh;
+    GPSTracker gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        btnRefresh=(Button)findViewById(R.id.btnRefresh);
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gps = new GPSTracker(MainActivity.this);
+                if(gps.canGetLocation()){
+                    atmArrayList.clear();
+                    double latitude = gps.getLatitude();
+                    double longitude = gps.getLongitude();
+                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+
+                    try {
+                        findAtm(String.valueOf(latitude),String.valueOf(longitude));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }else{
+                    gps.showSettingsAlert();
+                }
+            }
+        });
         recyclerView=(RecyclerView)findViewById(R.id.recyclerViewATM);
         atmArrayList=new ArrayList<>();
         atmAdapter=new ATMAdapter(this,atmArrayList);
@@ -72,19 +100,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
         recyclerView.setAdapter(atmAdapter);
-        try {
-            findAtm();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         Log.d(TAG, String.valueOf(atmAdapter.getItemCount()));
 
     }
 
-    private void findAtm() throws JSONException {
+    private void findAtm(String latitude,String longitude) throws JSONException {
         HashMap<String, String> params = new HashMap<>();
-        params.put("latitude", "40.995460");
-        params.put("longitude", "28.978359");
+        //params.put("latitude", "40.995460");
+        //params.put("longitude", "28.978359");
+        params.put("latitude", latitude);
+        params.put("longitude", longitude);
         params.put("radius", "1000000");
         params.put("city", null);
         params.put("district", null);
@@ -151,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() {
                 Map<String, String>  params = new HashMap<>();
                 params.put("Content-Type", "application/json");
-                params.put("apikey", "");
+                params.put("apikey", "l7xxdd95497a30fa403b99bd37a3ebaa0052");
 
                 return params;
             }
